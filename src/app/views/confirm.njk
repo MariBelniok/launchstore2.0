@@ -1,0 +1,9 @@
+<script>
+    const btnDelete = document.querySelector('#btn-delete')
+    btnDelete.addEventListener('submit',(e) => {
+        const confirmation = confirm("Deletar esse cadastro?")
+        if(!confirmation){
+            e.preventDefault()
+        }
+    })
+</script>
