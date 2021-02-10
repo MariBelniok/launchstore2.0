@@ -15,7 +15,7 @@
         
         <button class="button edit" type="submit">Atualizar</button>
     </form>
-    <form id="btn-delete" method="POST" action="/users_method=DELETE">
+    <form id="btn-delete" method="POST" action="/users?_method=DELETE">
         <input type="hidden" name="id" value="{{ user.id }}">
         <button class="button delete" type="submit">Delete</button>
     </form>

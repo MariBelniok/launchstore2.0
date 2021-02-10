@@ -1,5 +1,8 @@
 const db = require('../../config/db')
+const Product = require('../models/Product')
+const fs = require('fs')
 const { hash } = require('bcryptjs')
+
 module.exports = {
     async findOne(filters) {
         let query = "SELECT * FROM users"
@@ -67,5 +70,34 @@ module.exports = {
 
         await db.query(query)
         return 
+    },
+    async delete(id){
+        try {
+            let results = await db.query("SELECT * FROM products WHERE user_id = $1", [1])
+            const products = results.rows
+    
+            //dos produtos, pegar todas as imagens
+            const allFilesPromise = products.map(product => {
+                Product.file(product.id)
+            })
+    
+            let promiseResult = await Promise.all(allFilesPromise)
+    
+            //rodar remoção dos usuarios
+            await db.query('DELETE FROM users WHERE id = $1', [id])
+    
+            //remover as imagens da pasta public
+            promiseResult.map(results => {
+                results.rows.map(file => {fs.unlinkSync(file.path)})
+            })
+        
+        } catch (error) {
+            console.error(error)
+            return res.render("user/index", {
+                user: req.body,
+                error: "Erro ao tentar deletar sua conta"
+            })
+        }
+        //pegar todos os produtos
     }
 }
